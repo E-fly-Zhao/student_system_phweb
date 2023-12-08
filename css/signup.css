@@ -1,0 +1,141 @@
+.login-back{
+    position: fixed;
+    background: url("../images/background.png") no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+}
+
+.login-card{
+    z-index: 2;
+    margin-top: 40%;
+    margin-left: 10%;
+    width: 80%;
+    height: 500px;
+    /*background: rgba(68, 138, 202, 0.5);*/
+    background: rgba(255, 255, 255, 0.8);
+    /*background-color: #448aca;*/
+    border-radius: 1em;
+}
+
+.login-title{
+    width: 100%;
+    height: 80px;
+}
+
+.login-title>h1{
+    display: flex;
+    width: 100%;
+    height: 70px;
+    margin-left: 40%;
+}
+
+.input-item{
+    /*display: flex;*/
+    width: 80%;
+    height: 80px;
+    margin-left: 10%;
+}
+
+.username>span{
+    font-family: 仿宋;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+.username>input{
+    height: 25px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.password>span{
+    font-family: 仿宋;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+.password>input{
+    height: 25px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.identificationId>span{
+    font-family: 仿宋;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+.identificationId>input{
+    height: 25px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.name>span{
+    font-family: 仿宋;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+.name>input{
+    height: 25px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.studentId>span{
+    font-family: 仿宋;
+    font-weight: bold;
+    font-size: 120%;
+}
+
+.studentId>input{
+    height: 25px;
+    width: 100%;
+    margin-top: 10px;
+    border-radius: 5px;
+}
+
+.login-submit{
+    /*width: fit-content;*/
+    width: 100%;
+    margin-top: 30px;
+}
+
+.signup-submit{
+    /*width: fit-content;*/
+    width: 100%;
+    margin-top: -15px;
+}
+
+.login-submit>button{
+    width: 100%;
+    height: 35px;
+    color: #ffffff;
+    background: #5cb85c;
+    border-color: #4cae4c;
+    font-weight: bold;
+    font-size: large;
+    border-radius: 5px;
+}
+
+.signup-submit>button{
+    width: 100%;
+    height: 35px;
+    color: #ffffff;
+    background: #4169e1;
+    border-color: #00008b;
+    font-weight: bold;
+    font-size: large;
+    border-radius: 5px;
+}

@@ -1,0 +1,27 @@
+.tab {
+    width: 100%;
+    margin-top: 50px;
+}
+
+table {
+    width: 100%;
+    border: 1px solid black;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+td {
+    height: 50px;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: center;
+}
+
+tbody tr:nth-child(even) {
+    background-color: antiquewhite;
+}
+
+#btn {
+    width: 50px;
+    height: 30px;
+}

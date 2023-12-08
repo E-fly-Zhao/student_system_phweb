@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8" />
+    <!-- 适配移动端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--    全局样式-->
+    <link rel="stylesheet" href="css/reset.css">
+    <!--    字体图标-->
+    <link rel="stylesheet" href="css/iconfont.css">
+    <!--    主体的样式-->
+    <link rel="stylesheet" href="css/container.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/score.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+    <title>我的课程</title>
+  </head>
+
+  <body>
+  <!--导航开始-->
+  <div class="nav">
+    <div class="title">课程成绩查询</div>
+    <!--    <div class="search"><i class="iconfont">&#xe62f;</i></div>-->
+  </div>
+  <!--导航结束-->
+    <br>
+    <div class="term_title">2022-2023-1学期</div>
+    <div class="tab">
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>学期</th>
+            <th>成绩</th>
+          </tr>
+        </thead>
+        <tbody id="tbody1"></tbody>
+      </table>
+    </div>
+
+  <div class="term_title">2022-2023-2学期</div>
+  <div class="tab">
+    <table>
+      <thead>
+      <tr>
+        <th>课程编号</th>
+        <th>学期</th>
+        <th>成绩</th>
+      </tr>
+      </thead>
+      <tbody id="tbody2"></tbody>
+    </table>
+  </div>
+
+  <div class="term_title">2023-2024-1学期</div>
+  <div class="tab">
+    <table>
+      <thead>
+      <tr>
+        <th>课程编号</th>
+        <th>学期</th>
+        <th>成绩</th>
+      </tr>
+      </thead>
+      <tbody id="tbody3"></tbody>
+    </table>
+  </div>
+
+  <div class="term_title">2023-2024-2学期</div>
+  <div class="tab">
+    <table>
+      <thead>
+      <tr>
+        <th>课程编号</th>
+        <th>学期</th>
+        <th>成绩</th>
+      </tr>
+      </thead>
+      <tbody id="tbody4"></tbody>
+    </table>
+  </div>
+
+    <script>
+      $(document).ready(function () {
+        let userId = sessionStorage.getItem('userId');
+        //2022-2023-1
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2022-2023-1",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody1").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+        //2022-2023-2
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2022-2023-2",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody2").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+        //2023-2024-1
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2023-2024-1",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody3").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+        //2023-2024-2
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2023-2024-2",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody4").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+      });
+
+      function courseNo(courseNo) {
+        sessionStorage.setItem('courseNo',courseNo);
+        window.location.href = "face-kaoqin.html";
+      };
+
+      function delCourse(cId) {
+        let userId = sessionStorage.getItem("userId");
+        let courseId = cId;
+        $.ajax({
+          url: 'http://120.48.53.106:8080/userCourse/deleteUserCourse',
+          type: 'POST',
+          DataType: "JSON",
+          contentType: 'application/json;charset=UTF-8',
+          data: JSON.stringify({
+            courseId:courseId,
+            userId:userId
+          }),
+          success: function (data) {
+            // alert(tt);
+            alert("退课成功!");
+            location.reload();
+          },
+          error:function (data) {
+            // let tt = JSON.stringify(data);
+            // alert(tt);
+            alert("退课失败!");
+            location.reload();
+          }
+        })
+      }
+    </script>
+
+  <div class="back">
+    <input type="button" id="backBtn" value="返回">
+  </div>
+  <script>
+    $("#backBtn").click(function () {
+      window.history.go(-1);
+    })
+  </script>
+  </body>
+</html>

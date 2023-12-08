@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="images/title.ico">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/footer.css">
+    <link rel="stylesheet" href="css/user.css">
+    <link rel="stylesheet" href="css/container.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+</head>
+<body>
+<!--导航开始-->
+<div class="nav">
+<span>个人中心</span>
+</div>
+<!--导航结束-->
+<!--登录开始-->
+<div class="login">
+    <img src="images/personal-center-img/touxiang.webp" alt="">
+    <br><br>
+<!--    <button type="button">登录/注册</button>-->
+    <h3 id="name"></h3>
+</div>
+
+<!--登录结束-->
+<!--菜单开始-->
+<div class="container">
+    <div class="sj-item">
+        <div class="sj-top">
+            <!--            <img src="images/shangjia2.png" alt="">-->
+            <div class="sj-info sj-info2" id="info">
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            let name = sessionStorage.getItem('name');
+            let studentId = sessionStorage.getItem('studentId');
+            let status = sessionStorage.getItem('status');
+            if (status == 1) {
+                let birthday = sessionStorage.getItem('birthday');
+                let phone = sessionStorage.getItem('phone');
+                let sex = sessionStorage.getItem('sex');
+                let email = sessionStorage.getItem('email');
+                let str = "<p>姓名："+name+"</p><p>学号："+studentId+"</p><p>生日:"+birthday+"</p><p>电话号码:"+phone+"</p><p>邮箱:"+email+"</p><p>性别："+sex+"</p>";
+                document.getElementById("name").innerText = "" + name;
+                document.getElementById("info").innerHTML = str;
+            } else {
+                let str2 = "<p>姓名：" + name + "</p>" + "<p>学号：" + studentId + "</p>" + "<p>账号已注销!</p>";
+                document.getElementById("name").innerText = "" + name;
+                document.getElementById("info").innerHTML = str2;
+            }
+
+        })
+    </script>
+</div>
+<!--菜单结束-->
+<div class="clearHeight"></div>
+<!--页脚开始-->
+<div class="footer">
+    <div>
+        <a href="index.html">
+            <i class="iconfont">&#xe600;</i>
+            <p>首页</p>
+        </a>
+    </div>
+    <div>
+<!--        <a href="face-kaoqin.html">-->
+        <a href="selectCourse.html">
+            <i class="iconfont">&#xe600;</i>
+            <p>选课</p>
+        </a>
+    </div>
+    <div class="footer-active">
+        <a href="user.html">
+            <i class="iconfont">&#xe68a;</i>
+            <p>我的</p>
+        </a>
+    </div>
+</div>
+<!--页脚结束-->
+</body>
+</html>

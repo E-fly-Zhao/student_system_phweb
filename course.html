@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8" />
+    <!-- 适配移动端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--    全局样式-->
+    <link rel="stylesheet" href="css/reset.css">
+    <!--    字体图标-->
+    <link rel="stylesheet" href="css/iconfont.css">
+    <!--    主体的样式-->
+    <link rel="stylesheet" href="css/container.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/course.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+    <title>我的课程</title>
+  </head>
+
+  <body>
+  <!--导航开始-->
+  <div class="nav">
+
+    <div class="title">
+      <select id="sel_term">
+        <option value="2022-2023-1">2022-2023-1</option>
+        <option value="2022-2023-2">2022-2023-2</option>
+        <option value="2023-2024-1">2023-2024-1</option>
+        <option value="2023-2024-2">2023-2024-2</option>
+      </select>
+    </div>
+    <!--    <div class="search"><i class="iconfont">&#xe62f;</i></div>-->
+  </div>
+  <!--导航结束-->
+    <br>
+    <div class="tab">
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>课程名称</th>
+            <th>学期</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <script>
+      //默认学期为2022-2023-1
+      $(document).ready(function () {
+        let term = "2022-2023-1";
+        let studentId = sessionStorage.getItem('studentId');
+        let userId = sessionStorage.getItem('userId');
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/findCourse',
+          type: 'POST',
+          data: {
+            studentId: studentId,
+            term: term
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let courseName = [];
+            let term = [];
+            for (let i in temp) {
+              courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
+              term.push(temp[i].term);
+            }
+            let str = "";
+            for (let j in courseId) {
+              str += "<tr><td>" + courseId[j] + "</td><td>" + courseName[j] + "</td><td>" + term[j] + "</td>";
+              // str += "<tr><td>" + courseNo[j] + "</td><td>" + name[j] + "</td><td>" + credit[j] + "</td>" + term[j] + "</td><td>" + teacherName[j] + "</td><td><button id='btn' onclick='courseNo(" + courseNo[j] + ")'>签到</button></td><td><button id='btn' onclick='delCourse(" + courseId[j] + ")'>退课</button></td></tr>";
+            }
+            document.getElementById("tbody").innerHTML = str;
+          },
+          error: function (data) {
+            alert("获取课程失败!");
+          }
+        })
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/calCourse',
+          type: 'POST',
+          data: {
+            term: term,
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            if (tt == "false") {
+              alert("学期课程数量应在15-18节之间，请至选课模块修改！");
+            }
+            // alert(tt);
+          },
+          error: function (data) {
+            alert("获取课程失败!");
+          }
+        })
+      });
+
+      //根据学期查看课程
+      $(function () {
+        $("#sel_term").change(function () {
+          let term = $("#sel_term option:selected").val();
+          // alert(term);
+          // console.log(term);
+          let studentId = sessionStorage.getItem('studentId');
+          let userId = sessionStorage.getItem('userId');
+          $.ajax({
+            url: 'http://124.71.195.153:8111/course/findCourse',
+            type: 'POST',
+            data: {
+              studentId: studentId,
+              term: term
+            },
+            success: function (data) {
+              let tt = JSON.stringify(data);
+              let temp = JSON.parse(tt);
+              // alert(tt);
+              let courseId = [];
+              let courseName = [];
+              let term = [];
+              for (let i in temp) {
+                courseId.push(temp[i].courseId);
+                courseName.push(temp[i].courseName);
+                term.push(temp[i].term);
+              }
+              let str = "";
+              for (let j in courseId) {
+                str += "<tr><td>" + courseId[j] + "</td><td>" + courseName[j] + "</td><td>" + term[j] + "</td>";
+                // str += "<tr><td>" + courseNo[j] + "</td><td>" + name[j] + "</td><td>" + credit[j] + "</td>" + term[j] + "</td><td>" + teacherName[j] + "</td><td><button id='btn' onclick='courseNo(" + courseNo[j] + ")'>签到</button></td><td><button id='btn' onclick='delCourse(" + courseId[j] + ")'>退课</button></td></tr>";
+              }
+              document.getElementById("tbody").innerHTML = str;
+            },
+            error: function (data) {
+              alert("获取课程失败!");
+            }
+          })
+          $.ajax({
+            url: 'http://124.71.195.153:8111/course/calCourse',
+            type: 'POST',
+            data: {
+              term: term,
+              userId: userId
+            },
+            success: function (data) {
+              let tt = JSON.stringify(data);
+              let temp = JSON.parse(tt);
+              if (tt == "false") {
+                alert("学期课程数量应在15-18节之间，请至选课模块修改！");
+              }
+              // alert(tt);
+            },
+            error: function (data) {
+              alert("获取课程失败!");
+            }
+          })
+        });
+      });
+      // $(document).ready(function () {
+      //   let userNumber = sessionStorage.getItem('userNumber');
+      //   $.ajax({
+      //     url: 'http://120.48.53.106:8080/userCourse/getUserCourse',
+      //     type: 'GET',
+      //     data: {
+      //       userNumber:Number(userNumber)
+      //     },
+      //     // url:"http://120.48.53.106:8080/course/getAllCourse",
+      //     // type:"POST",
+      //     // DataType: "JSON",
+      //     // contentType: 'application/json;charset=UTF-8',
+      //     // data: JSON.stringify({
+      //     //   id:0,
+      //     //   page:1,
+      //     //   pageSize:10
+      //     // }),
+      //     success: function (data) {
+      //       let tt = JSON.stringify(data);
+      //       let temp = JSON.parse(tt);
+      //       // alert(tt);
+      //       let courseId = [];
+      //       let courseNo = [];
+      //       let name = [];
+      //       let credit = [];
+      //       let term = [];
+      //       let teacherName = [];
+      //       for (let i in temp.data){
+      //         courseId.push(temp.data[i].id);
+      //         courseNo.push(temp.data[i].courseNo);
+      //         name.push(temp.data[i].name);
+      //         credit.push(temp.data[i].credit);
+      //         term.push(temp.data[i].term);
+      //         teacherName.push(temp.data[i].teacherName);
+      //       }
+      //       let str = "";
+      //       for (let j in courseNo){
+      //         str += "<tr><td>"+courseNo[j]+"</td><td>"+name[j]+"</td><td>"+credit[j]+"</td><td>"+term[j]+"</td><td>"+teacherName[j]+"</td><td><button id='btn' onclick='courseNo("+courseNo[j]+")'>签到</button></td><td><button id='btn' onclick='delCourse("+courseId[j]+")'>退课</button></td></tr>";
+      //       }
+      //       document.getElementById("tbody").innerHTML = str;
+      //     },
+      //     error:function (data) {
+      //       alert("获取课程失败!");
+      //     }
+      //   })
+      // });
+      //
+      // function courseNo(courseNo) {
+      //   sessionStorage.setItem('courseNo',courseNo);
+      //   window.location.href = "face-kaoqin.html";
+      // };
+      //
+      // function delCourse(cId) {
+      //   let userId = sessionStorage.getItem("userId");
+      //   let courseId = cId;
+      //   $.ajax({
+      //     url: 'http://120.48.53.106:8080/userCourse/deleteUserCourse',
+      //     type: 'POST',
+      //     DataType: "JSON",
+      //     contentType: 'application/json;charset=UTF-8',
+      //     data: JSON.stringify({
+      //       courseId:courseId,
+      //       userId:userId
+      //     }),
+      //     success: function (data) {
+      //       // alert(tt);
+      //       alert("退课成功!");
+      //       location.reload();
+      //     },
+      //     error:function (data) {
+      //       // let tt = JSON.stringify(data);
+      //       // alert(tt);
+      //       alert("退课失败!");
+      //       location.reload();
+      //     }
+      //   })
+      // }
+    </script>
+
+  <div class="back">
+    <input type="button" id="backBtn" value="返回">
+  </div>
+  <script>
+    $("#backBtn").click(function () {
+      window.history.go(-1);
+    })
+  </script>
+  </body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选课</title>
+    <!--    适配移动端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--    网页图标-->
+    <!--    <link rel="icon" href="images/title.ico">-->
+    <!--    全局样式-->
+    <link rel="stylesheet" href="css/reset.css">
+    <!--    字体图标-->
+    <link rel="stylesheet" href="css/iconfont.css">
+    <!--    主体的样式-->
+    <link rel="stylesheet" href="css/container.css">
+    <!--    页脚的样式-->
+    <link rel="stylesheet" href="css/footer.css">
+    <!--    选课的样式-->
+    <link rel="stylesheet" href="css/selectCourse.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+</head>
+<body>
+<!--导航开始-->
+<div class="nav">
+
+    <div class="title">
+        <select id="sel_term">
+            <option value="2022-2023-1">2022-2023-1</option>
+            <option value="2022-2023-2">2022-2023-2</option>
+            <option value="2023-2024-1">2023-2024-1</option>
+            <option value="2023-2024-2">2023-2024-2</option>
+        </select>
+    </div>
+    <!--    <div class="search"><i class="iconfont">&#xe62f;</i></div>-->
+</div>
+<!--导航结束-->
+<div class="gap">
+
+</div>
+<!--主体开始-->
+<div class="container" id="course_view">
+    <!--    <div class="sj-item">-->
+    <!--        <div class="sj-top">-->
+    <!--&lt;!&ndash;            <img src="images/shangjia2.png" alt="">&ndash;&gt;-->
+    <!--            <div class="sj-info">-->
+    <!--                <p>软件文档写作</p>-->
+    <!--                <p>上课时间：</p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+    <!--    <div class="sj-item">-->
+    <!--        <div class="sj-top">-->
+    <!--&lt;!&ndash;            <img src="images/shangjia2.png" alt="">&ndash;&gt;-->
+    <!--            <div class="sj-info">-->
+    <!--                <p>计算机组成原理</p>-->
+    <!--                <p>上课时间：</p>-->
+    <!--            </div>-->
+    <!--        </div>-->
+    <!--    </div>-->
+
+</div>
+
+<script>
+    //默认学期为2022-2023-1
+    $(document).ready(function () {
+        let term = "2022-2023-1";
+        let studentId = sessionStorage.getItem('studentId');
+        let userId = sessionStorage.getItem('userId');
+        $.ajax({
+            url: 'http://124.71.195.153:8111/course/findCourse',
+            type: 'POST',
+            data: {
+                studentId: studentId,
+                term: term
+            },
+            success: function (data) {
+                let tt = JSON.stringify(data);
+                let temp = JSON.parse(tt);
+                // alert(tt);
+                let courseId = [];
+                for (let i in temp) {
+                    courseId.push(temp[i].courseId);
+                }
+                selectCourse(courseId, term);
+            },
+            error: function (data) {
+                alert("获取课程失败!");
+            }
+        })
+        $.ajax({
+            url: 'http://124.71.195.153:8111/course/calCourse',
+            type: 'POST',
+            data: {
+                term: term,
+                userId: userId
+            },
+            success: function (data) {
+                let tt = JSON.stringify(data);
+                let temp = JSON.parse(tt);
+                if (tt == "false") {
+                    alert("学期课程数量应在15-18节之间，请修改！");
+                }
+                // alert(tt);
+            },
+            error: function (data) {
+                alert("获取课程失败!");
+            }
+        })
+    });
+
+    function selectCourse(arr,term) {
+        $.ajax({
+            url:"http://124.71.195.153:8111/course/findCourseByterm",
+            type:"POST",
+            data: {
+                term: term
+            },
+            success:function (data) {
+                let tt = JSON.stringify(data);
+                // var re = '['+tt.match(/\[(.*)\]/)[1]+']';
+                let temp = JSON.parse(tt);
+                let courseId = [];
+                let courseName = [];
+                let hour = [];
+                let credit = [];
+                let term = [];
+                let classroom = [];
+                for (let i in temp){
+                    if(arr.indexOf(temp[i].courseId)+1)
+                        continue;
+                    courseId.push(temp[i].courseId);
+                    courseName.push(temp[i].courseName);
+                    hour.push(temp[i].hour);
+                    credit.push(temp[i].credit);
+                    term.push(temp[i].term);
+                    classroom.push(temp[i].classroom);
+                }
+                let str = "";
+                for (let j in courseId){
+                    let now_term = term[j].replace(/-/g,'');    //参数传递时有减号会异常，先去掉减号
+                    str += "<div class=\"sj-item\">\n" +
+                        "        <div class=\"sj-top\">\n" +
+                        "            <div class=\"sj-info\">\n" +
+                        "                <p>课程编号："+courseId[j]+"</p>\n" +
+                        "                <p>课程名称："+courseName[j]+"</p>\n" +
+                        "                <p>学分："+credit[j]+"</p>\n" +
+                        "                <p>学时："+hour[j]+"</p>\n" +
+                        "                <p>开课学期："+term[j]+"</p>\n" +
+                        "                <p>教室："+classroom[j]+"</p>\n" +
+                        "                <div class='selCourseBtn' id='selCourse'><button onclick='selCourse(" + courseId[j] + "," + now_term + ")'>选课</button></div>" +
+                        "            </div>\n" +
+                        "        </div>\n" +
+                        "    </div>";
+                }
+                document.getElementById("course_view").innerHTML = str;
+            },
+            error:function (data) {
+                alert("未获取到课程信息!");
+            }
+        });
+    }
+
+    //根据学期查看课程
+    $(function () {
+        $("#sel_term").change(function () {
+            let term = $("#sel_term option:selected").val();
+            // alert(term);
+            // console.log(term);
+            let studentId = sessionStorage.getItem('studentId');
+            let userId = sessionStorage.getItem('userId');
+            $.ajax({
+                url: 'http://124.71.195.153:8111/course/findCourse',
+                type: 'POST',
+                data: {
+                    studentId: studentId,
+                    term: term
+                },
+                success: function (data) {
+                    let tt = JSON.stringify(data);
+                    let temp = JSON.parse(tt);
+                    // alert(tt);
+                    let courseId = [];
+                    for (let i in temp) {
+                        courseId.push(temp[i].courseId);
+                    }
+                    selectCourse(courseId, term);
+                },
+                error: function (data) {
+                    alert("获取课程失败!");
+                }
+            })
+            $.ajax({
+                url: 'http://124.71.195.153:8111/course/calCourse',
+                type: 'POST',
+                data: {
+                    term: term,
+                    userId: userId
+                },
+                success: function (data) {
+                    let tt = JSON.stringify(data);
+                    let temp = JSON.parse(tt);
+                    if (tt == "false") {
+                        alert("学期课程数量应在15-18节之间，请修改！");
+                    }
+                    // alert(tt);
+                },
+                error: function (data) {
+                    alert("获取课程失败!");
+                }
+            })
+        });
+    });
+
+
+    function selCourse(cId,now_term) {
+        let courseId = cId;
+        let userId = sessionStorage.getItem("userId");
+        let temp = now_term.toString();
+        let term = temp.slice(0,4) + "-" + temp.slice(4,8) + "-" + temp.slice(8,9);     //拼接为正确学期表示
+        // alert(courseId + "," + term + "," + userId);
+        $.ajax({
+            url: "http://124.71.195.153:8111/course/selectCourse",
+            type: "POST",
+            data: {
+                courseId:courseId,
+                term: term,
+                userId: userId
+            },
+            success:function (data) {
+                // let tt = JSON.stringify(data);
+                // alert(tt);
+                alert("选课成功!");
+                location.reload();
+            },
+            error:function (data) {
+                alert("选课失败!");
+                location.reload();
+            }
+        });
+    }
+</script>
+
+<!--主体结束-->
+<div class="clearHeight"></div>
+<!--页脚开始-->
+<div class="footer">
+    <div>
+        <a href="index.html">
+            <i class="iconfont">&#xe600;</i>
+            <p>首页</p>
+        </a>
+    </div>
+    <div class="footer-active">
+        <!--        <a href="face-kaoqin.html">-->
+        <a href="selectCourse.html">
+            <i class="iconfont">&#xe600;</i>
+            <p>选课</p>
+        </a>
+    </div>
+    <div>
+        <a href="user.html">
+            <i class="iconfont">&#xe68a;</i>
+            <p>我的</p>
+        </a>
+    </div>
+</div>
+<!--页脚结束-->
+
+
+</body>
+</html>

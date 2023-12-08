@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <!--    适配移动端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--    网页图标-->
+<!--    <link rel="icon" href="images/title.ico">-->
+    <!--    全局样式-->
+    <link rel="stylesheet" href="css/reset.css">
+    <!--    字体图标-->
+    <link rel="stylesheet" href="css/iconfont.css">
+    <!--    主体的样式-->
+    <link rel="stylesheet" href="css/container.css">
+    <!--    页脚的样式-->
+    <link rel="stylesheet" href="css/footer.css">
+    <!--    首页的样式-->
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+</head>
+<body>
+<!--检测是否第一次登录，若是则要求用户更新信息-->
+<script>
+    $(document).ready(function () {
+        let birthday = sessionStorage.getItem('birthday');
+        let roleId = sessionStorage.getItem('roleId');
+        let status = sessionStorage.getItem('status');
+        if (birthday == "null") {
+            alert("首次登录，请录入信息!");
+            window.location.href = "update_info.html";
+        }
+        if (roleId == "null") {
+            alert("请联系管理员设置角色!");
+            window.location.href = "login.html";
+        }
+        if (status == 0) {
+            alert("您已注销，不可操作数据!");
+        }
+        $.ajax({
+            url:"http://124.71.195.153:8111/course/findAllCourse",
+            type:"POST",
+            success:function (data) {
+                let tt = JSON.stringify(data);
+                // let re = '['+tt.match(/\[(.*)\]/)[1]+']';
+                let temp = JSON.parse(tt);
+                let courseId = [];
+                let courseName = [];
+                let credit = [];
+                let term = [];
+                let hour = [];
+                let classroom = [];
+                for (let i in temp){
+                    courseId.push(temp[i].courseId);
+                    courseName.push(temp[i].courseName);
+                    credit.push(temp[i].credit);
+                    term.push(temp[i].term);
+                    hour.push(temp[i].hour);
+                    classroom.push(temp[i].classroom);
+                }
+                let str = "";
+                for (let j in courseId){
+                    str += "<div class=\"sj-item\">\n" +
+                        "        <div class=\"sj-top\">\n" +
+                        "            <div class=\"sj-info\">\n" +
+                        "                <p>课程编号："+courseId[j]+"</p>\n" +
+                        "                <p>课程名称："+courseName[j]+"</p>\n" +
+                        "                <p>学分："+credit[j]+"</p>\n" +
+                        "                <p>开课学期："+term[j]+"</p>\n" +
+                        "                <p>学时："+hour[j]+"</p>\n" +
+                        "                <p>教室："+classroom[j]+"</p>\n" +
+                        "            </div>\n" +
+                        "        </div>\n" +
+                        "    </div>";
+                }
+                document.getElementById("course_view").innerHTML = str;
+            },
+            error:function (data) {
+                alert("未获取到课程信息!");
+            }
+        });
+    })
+</script>
+
+<!--导航开始-->
+<div class="nav">
+
+    <div class="title">学生系统</div>
+<!--    <div class="search"><i class="iconfont">&#xe62f;</i></div>-->
+</div>
+<!--导航结束-->
+<div class="clearHeight"></div>
+<!--banner部分开始-->
+<div class="banner">
+    <img src="images/banner.png" alt="">
+
+</div>
+<!--banner部分结束-->
+<!--消息开始-->
+<!--<div class="message">-->
+<!--    <i class="iconfont">&#xe61f;</i>-->
+<!--    <span>消息一</span>-->
+<!--</div>-->
+<!--消息结束-->
+<!--菜单开始-->
+<div class="menu">
+    <div class="menu-active">
+        <a href="score.html">
+            <img src="images/personal-center-img/haoyou.png" alt="">
+            <p>成绩查询</p>
+        </a>
+    </div>
+    <div>
+<!--        <a href="face-kaoqin.html">-->
+        <a href="selectCourse.html">
+            <img src="images/personal-center-img/haoyou.png" alt="">
+            <p>课程选择</p>
+        </a>
+    </div>
+    <div>
+        <a href="course.html">
+            <img src="images/personal-center-img/haoyou.png" alt="">
+            <p>我的课程</p>
+        </a>
+    </div>
+
+</div>
+<!--菜单结束-->
+<!--餐厅标题开始-->
+<div class="ct-title">课程预览</div>
+<!--餐厅标题结束-->
+<!--主体开始-->
+<div class="container" id="course_view">
+<!--    <div class="sj-item">-->
+<!--        <div class="sj-top">-->
+<!--&lt;!&ndash;            <img src="images/shangjia2.png" alt="">&ndash;&gt;-->
+<!--            <div class="sj-info">-->
+<!--                <p>软件文档写作</p>-->
+<!--                <p>上课时间：</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="sj-item">-->
+<!--        <div class="sj-top">-->
+<!--&lt;!&ndash;            <img src="images/shangjia2.png" alt="">&ndash;&gt;-->
+<!--            <div class="sj-info">-->
+<!--                <p>计算机组成原理</p>-->
+<!--                <p>上课时间：</p>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+</div>
+
+<!--主体结束-->
+<div class="clearHeight"></div>
+<!--页脚开始-->
+<div class="footer">
+    <div class="footer-active">
+        <a href="index.html">
+            <i class="iconfont">&#xe600;</i>
+            <p>首页</p>
+        </a>
+    </div>
+    <div>
+<!--        <a href="face-kaoqin.html">-->
+        <a href="selectCourse.html">
+            <i class="iconfont">&#xe600;</i>
+            <p>选课</p>
+        </a>
+    </div>
+    <div>
+        <a href="user.html">
+            <i class="iconfont">&#xe68a;</i>
+            <p>我的</p>
+        </a>
+    </div>
+</div>
+<!--页脚结束-->
+
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <!--    适配移动端-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--    网页图标-->
+<!--    <link rel="icon" href="images/title.ico">-->
+    <!--    全局样式-->
+<!--    <link rel="stylesheet" href="css/reset.css">-->
+    <!--    字体图标-->
+<!--    <link rel="stylesheet" href="css/iconfont.css">-->
+    <!--    主体的样式-->
+<!--    <link rel="stylesheet" href="css/container.css">-->
+    <!--    首页的样式-->
+<!--    <link rel="stylesheet" href="css/index.css">-->
+    <!--    信息录入的样式-->
+    <link rel="stylesheet" href="css/update_info.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+</head>
+<body>
+
+<!--<div class="clearHeight"></div>-->
+<!--banner部分结束-->
+<!--消息开始-->
+<!--<div class="message">-->
+<!--    <i class="iconfont">&#xe61f;</i>-->
+<!--    <span>消息一</span>-->
+<!--</div>-->
+<!--消息结束-->
+<div class="login-back">
+<div class="login-card">
+    <form>
+        <div class="login-title">
+            <h1>信息更新</h1>
+            <div class="input-item">
+                <div class="birthday">
+                    <span>生日</span>
+                    <br>
+<!--                    <input type="text" name="" id="birthday" placeholder="请输入生日">-->
+                    <input type="date" name="" id="birthday">
+                </div>
+            </div>
+            <div class="input-item">
+                <div class="email">
+                    <span>邮箱</span>
+                    <br>
+                    <input type="text" name="" id="email" placeholder="请输入邮箱">
+                </div>
+            </div>
+            <div class="input-item">
+                <div class="phone">
+                    <span>电话号码</span>
+                    <br>
+                    <input type="text" name="" id="phone" placeholder="请输入电话号码">
+                </div>
+            </div>
+            <div class="input-item">
+                <div class="sex">
+                    <span>性别</span>
+                    <br>
+                    <input type="text" name="" id="sex" placeholder="请输入性别">
+                </div>
+            </div>
+            <div class="input-item">
+                <div class="login-submit">
+                    <button type="button" onclick="update()">更新</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        function update() {
+            let birthday = document.getElementById("birthday").value;
+            let email = document.getElementById("email").value;
+            let phone = document.getElementById("phone").value;
+            let sex = document.getElementById("sex").value;
+            let studentId = sessionStorage.getItem('studentId');
+            $.ajax({
+                type: "POST",
+                url: "http://124.71.195.153:8111/user/UpdateUser",
+                data: {
+                    birthday: birthday,
+                    email: email,
+                    phone: phone,
+                    sex: sex,
+                    studentId: studentId
+                },
+                success:function (data) {
+                    var tt = JSON.stringify(data);
+                    sessionStorage.setItem('birthday',birthday);
+                    sessionStorage.setItem('email',email);
+                    sessionStorage.setItem('phone',phone);
+                    sessionStorage.setItem('sex',sex);
+                    alert("更新成功!");
+                    window.location.href = "index.html";
+                },
+                error:function (data) {
+                    var tt = JSON.stringify(data);
+                    alert(tt);
+                }
+            });
+        }
+    </script>
+</div>
+
+</div>
+
+
+<!--主体结束-->
+
+
+</body>
+</html>
