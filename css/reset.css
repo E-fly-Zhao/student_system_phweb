@@ -11,7 +11,7 @@ input,button,img{border: none;vertical-align: middle;}
     position: relative;
     left: 80%;
     top: 80%;
-    z-index: 9;
+    z-index: 99;
 }
 #backBtn{
     width: 70px;

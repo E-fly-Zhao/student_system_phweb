@@ -27,7 +27,7 @@
   </div>
   <!--导航结束-->
     <br>
-    <div class="term_title">2022-2023-1学期</div>
+    <div class="term_title">2022-2023-1学期<div class='selCourseBtn' id='print1'><button onclick="excel(1)">报表</button></div></div>
     <div class="tab">
       <table>
         <thead>
@@ -41,7 +41,7 @@
       </table>
     </div>
 
-  <div class="term_title">2022-2023-2学期</div>
+  <div class="term_title">2022-2023-2学期<div class='selCourseBtn' id='print2'><button onclick="excel(2)">报表</button></div></div>
   <div class="tab">
     <table>
       <thead>
@@ -55,7 +55,7 @@
     </table>
   </div>
 
-  <div class="term_title">2023-2024-1学期</div>
+  <div class="term_title">2023-2024-1学期<div class='selCourseBtn' id='print3'><button onclick="excel(3)">报表</button></div></div>
   <div class="tab">
     <table>
       <thead>
@@ -69,7 +69,7 @@
     </table>
   </div>
 
-  <div class="term_title">2023-2024-2学期</div>
+  <div class="term_title">2023-2024-2学期<div class='selCourseBtn' id='print4'><button onclick="excel(4)">报表</button></div></div>
   <div class="tab">
     <table>
       <thead>
@@ -224,35 +224,49 @@
 
       });
 
-      function courseNo(courseNo) {
-        sessionStorage.setItem('courseNo',courseNo);
-        window.location.href = "face-kaoqin.html";
-      };
+      function excel(id) {
+        let term;
+        let studentId = sessionStorage.getItem('studentId');
+        let status = sessionStorage.getItem('status');                                  //注销用户不能操作
+        switch (id) {
+          case 1:
+            term = "2022-2023-1";break;
+          case 2:
+            term = "2022-2023-2";break;
+          case 3:
+            term = "2023-2024-1";break;
+          case 4:
+            term = "2023-2024-2";break;
+        }
+        if (status == 1) {
+          //文件下载作特殊处理！！！
+          $.ajax({
+            url: 'http://124.71.195.153:8111/excel/export/userGrade',
+            type: 'GET',
+            xhrFields: { responseType: "blob" },
+            data: {
+              studentId: studentId,
+              term: term
+            },
+            success: function (response,status) {
+              var blob = new Blob([response], { type: "application/xlsx" });// 此转换为xhrFields: { responseType: "arraybuffer" },
 
-      function delCourse(cId) {
-        let userId = sessionStorage.getItem("userId");
-        let courseId = cId;
-        $.ajax({
-          url: 'http://120.48.53.106:8080/userCourse/deleteUserCourse',
-          type: 'POST',
-          DataType: "JSON",
-          contentType: 'application/json;charset=UTF-8',
-          data: JSON.stringify({
-            courseId:courseId,
-            userId:userId
-          }),
-          success: function (data) {
-            // alert(tt);
-            alert("退课成功!");
-            location.reload();
-          },
-          error:function (data) {
-            // let tt = JSON.stringify(data);
-            // alert(tt);
-            alert("退课失败!");
-            location.reload();
-          }
-        })
+              var link = document.createElement("a");
+              link.href = window.URL.createObjectURL(response);
+              link.download = "report.xlsx";
+              document.body.appendChild(link);
+              link.click();
+            },
+            error: function (xhr, status, error) {
+              console.log("Error:", error);
+            }
+            // error:function (data) {
+            //   alert("获取报表信息失败!");
+            // }
+          });
+        } else {
+          alert("注销用户不可操作！");
+        }
       }
     </script>
 

@@ -219,26 +219,31 @@
         let userId = sessionStorage.getItem("userId");
         let temp = now_term.toString();
         let term = temp.slice(0,4) + "-" + temp.slice(4,8) + "-" + temp.slice(8,9);     //拼接为正确学期表示
+        let status = sessionStorage.getItem('status');                                  //注销用户不能操作
         // alert(courseId + "," + term + "," + userId);
-        $.ajax({
-            url: "http://124.71.195.153:8111/course/selectCourse",
-            type: "POST",
-            data: {
-                courseId:courseId,
-                term: term,
-                userId: userId
-            },
-            success:function (data) {
-                // let tt = JSON.stringify(data);
-                // alert(tt);
-                alert("选课成功!");
-                location.reload();
-            },
-            error:function (data) {
-                alert("选课失败!");
-                location.reload();
-            }
-        });
+        if (status == 1) {
+            $.ajax({
+                url: "http://124.71.195.153:8111/course/selectCourse",
+                type: "POST",
+                data: {
+                    courseId:courseId,
+                    term: term,
+                    userId: userId
+                },
+                success:function (data) {
+                    // let tt = JSON.stringify(data);
+                    // alert(tt);
+                    alert("选课成功!");
+                    location.reload();
+                },
+                error:function (data) {
+                    alert("选课失败!");
+                    location.reload();
+                }
+            });
+        } else {
+            alert("注销用户不可操作！");
+        }
     }
 </script>
 
