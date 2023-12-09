@@ -27,6 +27,10 @@
 
     <div class="title">
         <select id="sel_term">
+            <option value="2020-2021-1">2020-2021-1</option>
+            <option value="2020-2021-2">2020-2021-2</option>
+            <option value="2021-2022-1">2021-2022-1</option>
+            <option value="2021-2022-2">2021-2022-2</option>
             <option value="2022-2023-1">2022-2023-1</option>
             <option value="2022-2023-2">2022-2023-2</option>
             <option value="2023-2024-1">2023-2024-1</option>
@@ -63,9 +67,9 @@
 </div>
 
 <script>
-    //默认学期为2022-2023-1
+    //默认学期为2020-2021-1
     $(document).ready(function () {
-        let term = "2022-2023-1";
+        let term = "2020-2021-1";
         let studentId = sessionStorage.getItem('studentId');
         let userId = sessionStorage.getItem('userId');
         $.ajax({

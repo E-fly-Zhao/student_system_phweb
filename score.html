@@ -27,12 +27,13 @@
   </div>
   <!--导航结束-->
     <br>
-    <div class="term_title">2022-2023-1学期<div class='selCourseBtn' id='print1'><button onclick="excel(1)">报表</button></div></div>
+    <div class="term_title">2020-2021-1学期<div class='selCourseBtn' id='print1'><button onclick="excel(1)">报表</button></div></div>
     <div class="tab">
       <table>
         <thead>
           <tr>
             <th>课程编号</th>
+            <th>课程名称</th>
             <th>学期</th>
             <th>成绩</th>
           </tr>
@@ -41,54 +42,266 @@
       </table>
     </div>
 
-  <div class="term_title">2022-2023-2学期<div class='selCourseBtn' id='print2'><button onclick="excel(2)">报表</button></div></div>
+    <div class="term_title">2020-2021-2学期<div class='selCourseBtn' id='print2'><button onclick="excel(2)">报表</button></div></div>
+    <div class="tab">
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>课程名称</th>
+            <th>学期</th>
+            <th>成绩</th>
+          </tr>
+        </thead>
+        <tbody id="tbody2"></tbody>
+      </table>
+    </div>
+
+    <div class="term_title">2021-2022-1学期<div class='selCourseBtn' id='print3'><button onclick="excel(3)">报表</button></div></div>
+    <div class="tab">
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>课程名称</th>
+            <th>学期</th>
+            <th>成绩</th>
+          </tr>
+        </thead>
+        <tbody id="tbody3"></tbody>
+      </table>
+    </div>
+
+    <div class="term_title">2021-2022-2学期<div class='selCourseBtn' id='print4'><button onclick="excel(4)">报表</button></div></div>
+    <div class="tab">
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>课程名称</th>
+            <th>学期</th>
+            <th>成绩</th>
+          </tr>
+        </thead>
+        <tbody id="tbody4"></tbody>
+      </table>
+    </div>
+
+    <div class="term_title">2022-2023-1学期<div class='selCourseBtn' id='print5'><button onclick="excel(5)">报表</button></div></div>
+    <div class="tab">
+      <table>
+        <thead>
+          <tr>
+            <th>课程编号</th>
+            <th>课程名称</th>
+            <th>学期</th>
+            <th>成绩</th>
+          </tr>
+        </thead>
+        <tbody id="tbody5"></tbody>
+      </table>
+    </div>
+
+  <div class="term_title">2022-2023-2学期<div class='selCourseBtn' id='print6'><button onclick="excel(6)">报表</button></div></div>
   <div class="tab">
     <table>
       <thead>
       <tr>
         <th>课程编号</th>
+        <th>课程名称</th>
         <th>学期</th>
         <th>成绩</th>
       </tr>
       </thead>
-      <tbody id="tbody2"></tbody>
+      <tbody id="tbody6"></tbody>
     </table>
   </div>
 
-  <div class="term_title">2023-2024-1学期<div class='selCourseBtn' id='print3'><button onclick="excel(3)">报表</button></div></div>
+  <div class="term_title">2023-2024-1学期<div class='selCourseBtn' id='print7'><button onclick="excel(7)">报表</button></div></div>
   <div class="tab">
     <table>
       <thead>
       <tr>
         <th>课程编号</th>
+        <th>课程名称</th>
         <th>学期</th>
         <th>成绩</th>
       </tr>
       </thead>
-      <tbody id="tbody3"></tbody>
+      <tbody id="tbody7"></tbody>
     </table>
   </div>
 
-  <div class="term_title">2023-2024-2学期<div class='selCourseBtn' id='print4'><button onclick="excel(4)">报表</button></div></div>
+  <div class="term_title">2023-2024-2学期<div class='selCourseBtn' id='print8'><button onclick="excel(8)">报表</button></div></div>
   <div class="tab">
     <table>
       <thead>
       <tr>
         <th>课程编号</th>
+        <th>课程名称</th>
         <th>学期</th>
         <th>成绩</th>
       </tr>
       </thead>
-      <tbody id="tbody4"></tbody>
+      <tbody id="tbody8"></tbody>
     </table>
   </div>
 
     <script>
       $(document).ready(function () {
         let userId = sessionStorage.getItem('userId');
+        //2020-2021-1
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2020-2021-1",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let courseName=[];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}//这里辛苦神了，俺后端没有想到成绩可能为空，是俺的锅！！
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody1").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+        //2020-2021-2
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2020-2021-2",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let courseName=[];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName)
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody2").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+        //2021-2022-1
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2021-2022-1",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let courseName=[];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody3").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
+        //2021-2022-2
+        $.ajax({
+          url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
+          type: 'POST',
+          data: {
+            number: 18,
+            start: 0,
+            term: "2021-2022-2",
+            userId: userId
+          },
+          success: function (data) {
+            let tt = JSON.stringify(data);
+            let temp = JSON.parse(tt);
+            // alert(tt);
+            let courseId = [];
+            let courseName=[];
+            let term = [];
+            let grade = [];
+            for (let i in temp){
+              courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
+              term.push(temp[i].term);
+              grade.push(temp[i].grade);
+              if (grade[i] == null) {grade[i] = "未录入";}
+            }
+            let str = "";
+            for (let j in courseId){
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+            }
+            document.getElementById("tbody4").innerHTML = str;
+          },
+          error:function (data) {
+            alert("获取课程失败!");
+          }
+        })
+
         //2022-2023-1
         $.ajax({
           url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
           type: 'POST',
           data: {
             number: 18,
@@ -101,19 +314,21 @@
             let temp = JSON.parse(tt);
             // alert(tt);
             let courseId = [];
+            let courseName=[];
             let term = [];
             let grade = [];
             for (let i in temp){
               courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
               term.push(temp[i].term);
               grade.push(temp[i].grade);
               if (grade[i] == null) {grade[i] = "未录入";}
             }
             let str = "";
             for (let j in courseId){
-              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
             }
-            document.getElementById("tbody1").innerHTML = str;
+            document.getElementById("tbody5").innerHTML = str;
           },
           error:function (data) {
             alert("获取课程失败!");
@@ -123,6 +338,7 @@
         //2022-2023-2
         $.ajax({
           url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
           type: 'POST',
           data: {
             number: 18,
@@ -135,19 +351,21 @@
             let temp = JSON.parse(tt);
             // alert(tt);
             let courseId = [];
+            let courseName=[];
             let term = [];
             let grade = [];
             for (let i in temp){
               courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
               term.push(temp[i].term);
               grade.push(temp[i].grade);
               if (grade[i] == null) {grade[i] = "未录入";}
             }
             let str = "";
             for (let j in courseId){
-              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
             }
-            document.getElementById("tbody2").innerHTML = str;
+            document.getElementById("tbody6").innerHTML = str;
           },
           error:function (data) {
             alert("获取课程失败!");
@@ -157,6 +375,7 @@
         //2023-2024-1
         $.ajax({
           url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
           type: 'POST',
           data: {
             number: 18,
@@ -169,19 +388,21 @@
             let temp = JSON.parse(tt);
             // alert(tt);
             let courseId = [];
+            let courseName=[];
             let term = [];
             let grade = [];
             for (let i in temp){
               courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
               term.push(temp[i].term);
               grade.push(temp[i].grade);
               if (grade[i] == null) {grade[i] = "未录入";}
             }
             let str = "";
             for (let j in courseId){
-              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
             }
-            document.getElementById("tbody3").innerHTML = str;
+            document.getElementById("tbody7").innerHTML = str;
           },
           error:function (data) {
             alert("获取课程失败!");
@@ -191,6 +412,7 @@
         //2023-2024-2
         $.ajax({
           url: 'http://124.71.195.153:8111/course/checkScore',
+          // url:'http://localhost:8111/course/checkScore',
           type: 'POST',
           data: {
             number: 18,
@@ -203,19 +425,21 @@
             let temp = JSON.parse(tt);
             // alert(tt);
             let courseId = [];
+            let courseName=[];
             let term = [];
             let grade = [];
             for (let i in temp){
               courseId.push(temp[i].courseId);
+              courseName.push(temp[i].courseName);
               term.push(temp[i].term);
               grade.push(temp[i].grade);
               if (grade[i] == null) {grade[i] = "未录入";}
             }
             let str = "";
             for (let j in courseId){
-              str += "<tr><td>"+courseId[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
+              str += "<tr><td>"+courseId[j]+"</td><td>"+courseName[j]+"</td><td>"+term[j]+"</td><td>"+grade[j]+"</td>";
             }
-            document.getElementById("tbody4").innerHTML = str;
+            document.getElementById("tbody8").innerHTML = str;
           },
           error:function (data) {
             alert("获取课程失败!");
@@ -230,18 +454,28 @@
         let status = sessionStorage.getItem('status');                                  //注销用户不能操作
         switch (id) {
           case 1:
-            term = "2022-2023-1";break;
+            term = "2020-2021-1";break;
           case 2:
-            term = "2022-2023-2";break;
+            term = "2020-2021-2";break;
           case 3:
-            term = "2023-2024-1";break;
+            term = "2021-2022-1";break;
           case 4:
+            term = "2021-2022-2";break;
+          case 5:
+            term = "2022-2023-1";break;
+          case 6:
+            term = "2022-2023-2";break;
+          case 7:
+            term = "2023-2024-1";break;
+          case 8:
             term = "2023-2024-2";break;
+          
         }
         if (status == 1) {
           //文件下载作特殊处理！！！
           $.ajax({
-            url: 'http://124.71.195.153:8111/excel/export/userGrade',
+            // url: 'http://124.71.195.153:8111/excel/export/userGrade',
+            url: 'http://localhost:8111/excel/export/userGrade',
             type: 'GET',
             xhrFields: { responseType: "blob" },
             data: {
@@ -253,7 +487,7 @@
 
               var link = document.createElement("a");
               link.href = window.URL.createObjectURL(response);
-              link.download = "report.xlsx";
+              link.download = "学生成绩汇总表.xlsx";
               document.body.appendChild(link);
               link.click();
             },
