@@ -1,0 +1,400 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>人脸考勤</title>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <link rel="stylesheet" href="css/reset.css">-->
+<!--    <link rel="stylesheet" href="css/iconfont.css">-->
+<!--    <link rel="stylesheet" href="css/container.css">-->
+<!--    <link rel="stylesheet" href="css/face-kaoqin.css">-->
+<!--    <script src="js/jquery.min.js"></script>-->
+<!--    <script src="js/jquery-3.2.1.js"></script>-->
+<!--    <script src="js/json3.js"></script>-->
+<!--    <script src="js/jquery-form.js"></script>-->
+<!--</head>-->
+<!--<body>-->
+<!--<button onclick="openMedia()">开启摄像头</button>-->
+<!--<video id="video" width="500px" height="500px" autoplay="autoplay"></video>-->
+<!--<canvas id="canvas" width="500px" height="500px"></canvas>-->
+<!--<button onclick="takePhoto()">签到</button>-->
+<!--<img id="imgTag" src="">-->
+<!--<button onclick="closeMedia()">关闭摄像头</button>-->
+
+<!--<script>-->
+
+<!--    let mediaStreamTrack=null; // 视频对象(全局)-->
+<!--    let video ;-->
+<!--    function openMedia() {-->
+<!--        let constraints = {-->
+<!--            video: { width: 500, height: 500 },-->
+<!--            audio: false-->
+<!--        };-->
+<!--        //获得video摄像头-->
+<!--        video = document.getElementById('video');-->
+<!--        let promise = navigator.mediaDevices.getUserMedia(constraints);-->
+<!--        promise.then((mediaStream) => {-->
+<!--            // mediaStreamTrack = typeof mediaStream.stop === 'function' ? mediaStream : mediaStream.getTracks()[1];-->
+<!--            mediaStreamTrack=mediaStream.getVideoTracks()-->
+<!--            video.srcObject = mediaStream;-->
+<!--            video.play();-->
+<!--        });-->
+<!--    }-->
+
+<!--    // 拍照-->
+<!--    function takePhoto() {-->
+<!--        //获得Canvas对象-->
+<!--        let video = document.getElementById('video');-->
+<!--        let canvas = document.getElementById('canvas');-->
+<!--        let ctx = canvas.getContext('2d');-->
+<!--        let userNumber = Number(sessionStorage.getItem("userNumber"));-->
+<!--        ctx.drawImage(video, 0, 0, 500, 500);-->
+
+
+<!--        // toDataURL  -&#45;&#45;  可传入'image/png'-&#45;&#45;默认, 'image/jpeg'-->
+<!--        let img = document.getElementById('canvas').toDataURL('image/jpeg');-->
+<!--        // 这里的img就是得到的图片-->
+<!--        console.log('img-&#45;&#45;&#45;&#45;', img);-->
+<!--        document.getElementById('imgTag').src=img;-->
+
+<!--//上传-->
+<!--        $.ajax({-->
+<!--            url:"http://120.48.53.106:8080/face/judge2",-->
+<!--            type:"POST",-->
+<!--            data:{"image":img.slice(23),"userNumber":userNumber},-->
+<!--            success:function(data){-->
+<!--                var tt = JSON.stringify(data.data);-->
+<!--                var temp = tt.substring(1,5);-->
+<!--                // alert(temp);-->
+<!--                if (temp == "验证成功") {-->
+<!--                    sign();-->
+<!--                } else {-->
+<!--                    alert("识别失败!");-->
+<!--                    location.reload();-->
+<!--                }-->
+<!--                // console.log(data);-->
+<!--                // document.gauges.forEach(function(gauge) {-->
+<!--                //     gauge.value =data.data-->
+<!--                // });-->
+<!--            },-->
+<!--            error:function(){-->
+<!--                alert("识别失败!");-->
+<!--                console.log("服务端异常！");-->
+<!--                location.reload();-->
+<!--            }-->
+<!--        });-->
+
+
+<!--    }-->
+
+<!--    // 关闭摄像头-->
+<!--    function closeMedia() {-->
+<!--        let stream = document.getElementById('video').srcObject;-->
+<!--        let tracks = stream.getTracks();-->
+
+<!--        tracks.forEach(function(track) {-->
+<!--            track.stop();-->
+<!--        });-->
+
+<!--        document.getElementById('video').srcObject = null;-->
+<!--    }-->
+
+<!--    function sign() {-->
+<!--        let userNumber = sessionStorage.getItem("userNumber");-->
+<!--        let courseNo = sessionStorage.getItem("courseNo");-->
+<!--        $.ajax({-->
+<!--            url:"http://120.48.53.106:8080/sign/addSign",-->
+<!--            type:"POST",-->
+<!--            DataType: "JSON",-->
+<!--            contentType: 'application/json;charset=UTF-8',-->
+<!--            data:JSON.stringify({-->
+<!--                courseNo:courseNo,-->
+<!--                isCheck:true,-->
+<!--                userNumber:userNumber-->
+<!--            }),-->
+<!--            success:function(data){-->
+<!--                // var tt = JSON.stringify(data.data);-->
+<!--                // var temp = tt.substring(1,5);-->
+<!--                alert("签到成功!");-->
+<!--                window.location.href = "index.html";-->
+<!--            },-->
+<!--            error:function(data){-->
+<!--                alert("签到失败!");-->
+<!--                location.reload();-->
+<!--            }-->
+<!--        });-->
+<!--    }-->
+<!--</script>-->
+
+<!--<div class="back">-->
+<!--    <input type="button" id="backBtn" value="返回">-->
+<!--</div>-->
+<!--<script>-->
+<!--    $("#backBtn").click(function () {-->
+<!--        window.history.go(-1);-->
+<!--    })-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>人脸考勤</title>-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <link rel="stylesheet" href="css/reset.css">-->
+<!--    <link rel="stylesheet" href="css/iconfont.css">-->
+<!--    <link rel="stylesheet" href="css/container.css">-->
+<!--    <link rel="stylesheet" href="css/face-kaoqin.css">-->
+<!--    <script src="js/jquery.min.js"></script>-->
+<!--    <script src="js/jquery-3.2.1.js"></script>-->
+<!--    <script src="js/json3.js"></script>-->
+<!--    <script src="js/jquery-form.js"></script>-->
+<!--    <style>-->
+
+<!--        * {-->
+
+<!--            font-size: 1.5rem;-->
+
+<!--        }-->
+
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+
+<!--<label for="environment">Capture environment:</label>-->
+
+<!--<br>-->
+
+<!--<input-->
+
+<!--        type="file"-->
+
+<!--        id="environment"-->
+
+<!--        capture="environment"-->
+
+<!--        accept="video/*"-->
+
+<!--&gt;-->
+
+<!--<br><br>-->
+
+<!--<label for="user">Capture user:</label>-->
+
+<!--<br>-->
+
+<!--<input-->
+
+<!--        type="file"-->
+
+<!--        id="user"-->
+
+<!--        capture="user"-->
+
+<!--        accept="image/*"-->
+
+<!--&gt;-->
+
+<!--</body>-->
+
+<!--</html>-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>人脸考勤</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/iconfont.css">
+    <link rel="stylesheet" href="css/container.css">
+    <link rel="stylesheet" href="css/face-kaoqin.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-3.2.1.js"></script>
+    <script src="js/json3.js"></script>
+    <script src="js/jquery-form.js"></script>
+    <script>
+        // 是否是手机
+        function isMobile() {
+            let userAgentInfo = navigator.userAgent;
+            let mobileAgents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+            let mobile_flag = false;
+            //根据userAgent判断是否是手机
+            for (let v = 0; v < mobileAgents.length; v++) {
+                if (userAgentInfo.indexOf(mobileAgents[v]) > 0) {
+                    mobile_flag = true;
+                    break;
+                }
+            }
+            let screen_width = window.screen.width;
+            let screen_height = window.screen.height;
+            //根据屏幕分辨率判断是否是手机
+            if (screen_width > 325 && screen_height < 750) {
+                mobile_flag = true;
+            }
+            return mobile_flag;
+        }
+    </script>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #capture {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            line-height: 50px;
+            text-align: center;
+        }
+
+        canvas {
+            width: 50%;
+            height: 50%;
+            display: none;
+        }
+
+        video {
+            width: 45%;
+            height: 45%;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas" width="720" height="540"></canvas>
+<video id="video"></video>
+<br /><button id="capture">拍照</button>
+
+<script type="text/javascript">
+    let flag = false;
+    const video = document.getElementById('video');
+    const capture = document.getElementById('capture');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const screen_W = window.innerWidth || document.body.clientWidth;
+    const screen_H = window.innerHeight || document.body.clientHeight;
+    canvas.width = screen_W * 3;
+    canvas.height = screen_H * 3 + 12;
+    if (isMobile()) {
+        $(canvas).css({"width": "95%"});
+        canvas.width = screen_W * 2.5;
+        canvas.height = screen_W * 3 + 12;
+        alert("phone");
+    }
+    if (navigator.mediaDevices === undefined) {
+        navigator.mediaDevices = {};
+    }
+    if (navigator.mediaDevices.getUserMedia === undefined) {
+        navigator.mediaDevices.getUserMedia = function(constraints) {
+            var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+            if (!getUserMedia) {
+                return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+            }
+            return new Promise(function(resolve, reject) {
+                getUserMedia.call(navigator, constraints, resolve, reject);
+            });
+        }
+    }
+    //默认使用前摄像头，强制使用后置摄像头如下设置
+    //let constraints = {video: { facingMode: { exact: "environment" } }};
+    let constraints = {video: true};
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then(function(stream) {
+            if ("srcObject" in video) {
+                video.srcObject = stream;
+            } else {
+                video.src = window.URL.createObjectURL(stream);
+            }
+            video.onloadedmetadata = function(e) {
+                video.play();
+            };
+        }).catch(function(err) {
+        console.log(err.name + ":" + err.message);
+    });
+
+    capture.addEventListener('click', function(e) {
+        if (!flag) {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            $(canvas).show();
+            $(video).hide();
+            $(capture).text("重新拍照");
+            flag = true;
+        } else {
+            $(video).show();
+            $(canvas).hide();
+            $(capture).text("拍照");
+            flag = false;
+        }
+        // toDataURL  ---  可传入'image/png'---默认, 'image/jpeg'
+        let img = document.getElementById('canvas').toDataURL('image/jpeg');
+        let userNumber = Number(sessionStorage.getItem("userNumber"));
+
+//上传
+        $.ajax({
+            url:"http://120.48.53.106:8080/face/judge2",
+            type:"POST",
+            data:{"image":img.slice(23),"userNumber":userNumber},
+            success:function(data){
+                var tt = JSON.stringify(data.data);
+                var temp = tt.substring(1,5);
+                // alert(temp);
+                if (temp == "验证成功") {
+                    sign();
+                } else {
+                    alert("识别失败!");
+                    location.reload();
+                }
+                // console.log(data);
+                // document.gauges.forEach(function(gauge) {
+                //     gauge.value =data.data
+                // });
+            },
+            error:function(){
+                alert("识别失败!");
+                console.log("服务端异常！");
+                location.reload();
+            }
+        });
+    });
+
+    function sign() {
+        let userNumber = sessionStorage.getItem("userNumber");
+        let courseNo = sessionStorage.getItem("courseNo");
+        $.ajax({
+            url: "http://120.48.53.106:8080/sign/addSign",
+            type: "POST",
+            DataType: "JSON",
+            contentType: 'application/json;charset=UTF-8',
+            data: JSON.stringify({
+                courseNo: courseNo,
+                isCheck: true,
+                userNumber: userNumber
+            }),
+            success: function (data) {
+                // var tt = JSON.stringify(data.data);
+                // var temp = tt.substring(1,5);
+                alert("签到成功!");
+                window.location.href = "index.html";
+            },
+            error: function (data) {
+                alert("签到失败!");
+                location.reload();
+            }
+        });
+    }
+</script>
+
+<div class="back">
+    <input type="button" id="backBtn" value="返回">
+</div>
+<script>
+    $("#backBtn").click(function () {
+        window.history.go(-1);
+    })
+</script>
+</body>
+</html>
+
