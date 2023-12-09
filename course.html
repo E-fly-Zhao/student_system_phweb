@@ -46,12 +46,18 @@
         </thead>
         <tbody id="tbody"></tbody>
       </table>
+      <div class="input-item">
+        <div class="print-submit">
+          <button type="button" onclick="excel_course()">打印学期选课情况</button>
+        </div>
+      </div>
     </div>
 
     <script>
       //默认学期为2022-2023-1
       $(document).ready(function () {
         let term = "2022-2023-1";
+        sessionStorage.setItem('select_term',term);
         let studentId = sessionStorage.getItem('studentId');
         let userId = sessionStorage.getItem('userId');
         $.ajax({
@@ -109,6 +115,7 @@
       $(function () {
         $("#sel_term").change(function () {
           let term = $("#sel_term option:selected").val();
+          sessionStorage.setItem('select_term',term);
           // alert(term);
           // console.log(term);
           let studentId = sessionStorage.getItem('studentId');
@@ -164,83 +171,41 @@
           })
         });
       });
-      // $(document).ready(function () {
-      //   let userNumber = sessionStorage.getItem('userNumber');
-      //   $.ajax({
-      //     url: 'http://120.48.53.106:8080/userCourse/getUserCourse',
-      //     type: 'GET',
-      //     data: {
-      //       userNumber:Number(userNumber)
-      //     },
-      //     // url:"http://120.48.53.106:8080/course/getAllCourse",
-      //     // type:"POST",
-      //     // DataType: "JSON",
-      //     // contentType: 'application/json;charset=UTF-8',
-      //     // data: JSON.stringify({
-      //     //   id:0,
-      //     //   page:1,
-      //     //   pageSize:10
-      //     // }),
-      //     success: function (data) {
-      //       let tt = JSON.stringify(data);
-      //       let temp = JSON.parse(tt);
-      //       // alert(tt);
-      //       let courseId = [];
-      //       let courseNo = [];
-      //       let name = [];
-      //       let credit = [];
-      //       let term = [];
-      //       let teacherName = [];
-      //       for (let i in temp.data){
-      //         courseId.push(temp.data[i].id);
-      //         courseNo.push(temp.data[i].courseNo);
-      //         name.push(temp.data[i].name);
-      //         credit.push(temp.data[i].credit);
-      //         term.push(temp.data[i].term);
-      //         teacherName.push(temp.data[i].teacherName);
-      //       }
-      //       let str = "";
-      //       for (let j in courseNo){
-      //         str += "<tr><td>"+courseNo[j]+"</td><td>"+name[j]+"</td><td>"+credit[j]+"</td><td>"+term[j]+"</td><td>"+teacherName[j]+"</td><td><button id='btn' onclick='courseNo("+courseNo[j]+")'>签到</button></td><td><button id='btn' onclick='delCourse("+courseId[j]+")'>退课</button></td></tr>";
-      //       }
-      //       document.getElementById("tbody").innerHTML = str;
-      //     },
-      //     error:function (data) {
-      //       alert("获取课程失败!");
-      //     }
-      //   })
-      // });
-      //
-      // function courseNo(courseNo) {
-      //   sessionStorage.setItem('courseNo',courseNo);
-      //   window.location.href = "face-kaoqin.html";
-      // };
-      //
-      // function delCourse(cId) {
-      //   let userId = sessionStorage.getItem("userId");
-      //   let courseId = cId;
-      //   $.ajax({
-      //     url: 'http://120.48.53.106:8080/userCourse/deleteUserCourse',
-      //     type: 'POST',
-      //     DataType: "JSON",
-      //     contentType: 'application/json;charset=UTF-8',
-      //     data: JSON.stringify({
-      //       courseId:courseId,
-      //       userId:userId
-      //     }),
-      //     success: function (data) {
-      //       // alert(tt);
-      //       alert("退课成功!");
-      //       location.reload();
-      //     },
-      //     error:function (data) {
-      //       // let tt = JSON.stringify(data);
-      //       // alert(tt);
-      //       alert("退课失败!");
-      //       location.reload();
-      //     }
-      //   })
-      // }
+
+      function excel_course() {
+        let term = sessionStorage.getItem('select_term');
+        let studentId = sessionStorage.getItem('studentId');
+        let status = sessionStorage.getItem('status');                                  //注销用户不能操作
+        if (status == 1) {
+          //文件下载作特殊处理！！！
+          $.ajax({
+            url: 'http://124.71.195.153:8111/excel/export/userCourse',
+            type: 'GET',
+            xhrFields: { responseType: "blob" },
+            data: {
+              studentId: studentId,
+              term: term
+            },
+            success: function (response,status) {
+              var blob = new Blob([response], { type: "application/xlsx" });// 此转换为xhrFields: { responseType: "arraybuffer" },
+
+              var link = document.createElement("a");
+              link.href = window.URL.createObjectURL(response);
+              link.download = "report.xlsx";
+              document.body.appendChild(link);
+              link.click();
+            },
+            error: function (xhr, status, error) {
+              console.log("Error:", error);
+            }
+            // error:function (data) {
+            //   alert("获取报表信息失败!");
+            // }
+          });
+        } else {
+          alert("注销用户不可操作！");
+        }
+      }
     </script>
 
   <div class="back">
